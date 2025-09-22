@@ -1,0 +1,68 @@
+# Plugin coded by BroGabe
+
+prefix: '&4&lBackpacks &8»'
+
+messages:
+  cannot-sell: '%prefix% &fYou cannot sell inside the darkzone world.'
+  sold-msg: '%prefix% &fYou have sold your backpack for &c&n$%amount%&f!'
+  upgrade-msg: '%prefix% &fYou have upgraded your backpack!'
+  backpack-full: '%prefix% &fYour backpack is full!'
+
+settings:
+  darkzone-world: 'darkzone' # The name of the darkzone world.
+  darkzone-item: 'NETHER_STAR' # The item that backpacks store.
+  starting-capacity: 300
+  sell-price: 30 # The sell price of the darkzone item.
+
+backpack-item:
+  material: 'SADDLE'
+  name: '&4&lDarkzone &c&lBackpack &8[&7Tier %tier%&8]'
+  lore:
+    - '&7&oA simple storage device that stores all'
+    - '&7&odarkzone mob drops for easy organization.'
+    - ''
+    - '&f* &7Capacity: &a%amount%&8/&c%max%'
+    - ''
+    - '&7&oRight-Click to open upgrade menu.'
+    - '&7&oLeft-Click to sell all items.'
+
+sell-item:
+  material: 'GOLD_NUGGET'
+  name: '&4&lSell &cYour Backpack'
+  lore:
+    - ''
+    - '&7Click here to sell your backpack'
+
+upgrade-item:
+  material: 'SADDLE'
+  name: '&4&lUpgrade &cYour Backpack'
+  lore:
+    - '&7Click here to upgrade your backpack'
+    - ''
+    - '&f* &7Next Tier: &a%current% &f➠ &c%next%'
+    - '&f* &7Cost: &c%cost%'
+
+guide-item:
+  material: 'BOOK_AND_QUILL'
+  name: '&4&lWhat &cis a backpack?'
+  lore:
+    - ''
+    - '&7&nBackpacks&7 are an easy and efficient way to'
+    - '&7store all your darkzone mob drops to'
+    - '&7prevent inventory clutter.'
+    - ''
+    - '&f* &cYou must leave darkzone to sell.'
+
+backpack-tiers:
+  2:
+    cost: 50000000
+    capacity: 500
+  3:
+    cost: 100000000
+    capacity: 1000
+  4:
+    cost: 150000000
+    capacity: 1500
+  5:
+    cost: 500000000
+    capacity: -1
