@@ -77,7 +77,7 @@ public class ItemCreator {
     }
 
     public void updateLore(Function<String, String> replace) {
-        ItemMeta itemMeta = getItem().getItemMeta();;
+        ItemMeta itemMeta = getItem().getItemMeta();
 
         List<String> updatedLore = new ArrayList<>();
 

@@ -32,7 +32,6 @@ public class UpgradeModule {
         if(!backpackUtils.isValidBackpack(itemInHand)) return;
 
         NBTItem nbtItem = new NBTItem(itemInHand);
-
         NBTCompound compound = nbtItem.getCompound("DarkzoneBackpack");
 
         int tier = compound.getInteger("tier");
@@ -46,13 +45,15 @@ public class UpgradeModule {
 
         Economy economy = plugin.getEconomy();
 
-        if(!economy.has(player, Math.max(0, price))) {
+        int updatedPrice = Math.max(0, price);
+
+        if(!economy.has(player, updatedPrice)) {
             player.sendMessage(ColorUtil.color("&4&lBACKPACKS &fYou cannot afford this!"));
             player.playSound(player.getLocation(), Sound.VILLAGER_NO, 6, 6);
             return;
         }
 
-        economy.withdrawPlayer(player, Math.max(0, price));
+        economy.withdrawPlayer(player, updatedPrice);
 
         BackpackModule backpackModule = plugin.getModuleManager().getBackpackModule();
 

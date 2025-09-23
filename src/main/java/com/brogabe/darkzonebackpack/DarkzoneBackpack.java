@@ -53,7 +53,6 @@ public final class DarkzoneBackpack extends JavaPlugin {
         backpackUtils = new BackpackUtils(this);
         moduleManager = new ModuleManager(this);
 
-
         // Register the Menus
         upgradeMenu = new UpgradeMenu(this);
 

@@ -14,9 +14,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class UpgradeMenu {
 
@@ -60,10 +60,7 @@ public class UpgradeMenu {
         String nextTier = (tierInfo.nextTierExists(tier) ? String.valueOf(tier + 1) : "MAXED");
         String nextPrice = (tierInfo.nextTierExists(tier) ? MoneyUtil.intToDollars(tierInfo.nextTierPrice(tier)) : "MAXED");
 
-        List<String> upgradeLore = new ArrayList<>(configManager.getUpgradeLore());
-        upgradeLore.replaceAll(s -> s.replace("%current%", currentTier));
-        upgradeLore.replaceAll(s -> s.replace("%next%", nextTier));
-        upgradeLore.replaceAll(s -> s.replace("%cost%", nextPrice));
+        List<String> upgradeLore = formatUpgradeLore(configManager.getUpgradeLore(), currentTier, nextTier, nextPrice);
 
         ItemStack sellItem = new ItemCreator(Material.valueOf(configManager.getSellMaterial()), configManager.getSellName(), 1, 0, "", configManager.getSellLore()).getItem();
         ItemStack guideItem = new ItemCreator(Material.valueOf(configManager.getGuideMaterial()), configManager.getGuideName(), 1, 0, "", configManager.getGuideLore()).getItem();
@@ -85,5 +82,13 @@ public class UpgradeMenu {
         gui.getFiller().fill(new GuiItem(glassItem));
 
         gui.open(player);
+    }
+
+    private List<String> formatUpgradeLore(List<String> baseLore, String currentTier, String nextTier, String nextPrice) {
+        return baseLore.stream()
+                .map(s -> s.replace("%current%", currentTier)
+                        .replace("%next%", nextTier)
+                        .replace("%cost%", nextPrice))
+                .collect(Collectors.toList());
     }
 }

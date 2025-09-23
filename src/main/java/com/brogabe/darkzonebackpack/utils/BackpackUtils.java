@@ -66,7 +66,6 @@ public class BackpackUtils {
         lore.replaceAll(ColorUtil::color);
 
         itemMeta.setLore(lore);
-
         itemStack.setItemMeta(itemMeta);
 
         player.getInventory().setItem(slot, itemStack);
