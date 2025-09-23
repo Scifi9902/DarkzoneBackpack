@@ -35,7 +35,6 @@ public class SellModule {
         if(slot == -1) return;
 
         NBTItem nbtItem = new NBTItem(itemInHand);
-
         NBTCompound compound = nbtItem.getCompound("DarkzoneBackpack");
 
         int amount = compound.getInteger("capacity");
@@ -47,7 +46,6 @@ public class SellModule {
         }
 
         int sellPrice = configManager.getSellPrice();
-
         int earnedMoney = Math.max(0, amount * sellPrice);
 
         compound.setInteger("capacity", 0);
