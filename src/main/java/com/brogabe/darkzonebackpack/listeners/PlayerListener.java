@@ -4,9 +4,7 @@ import com.brogabe.darkzonebackpack.DarkzoneBackpack;
 import com.brogabe.darkzonebackpack.configuration.ConfigManager;
 import com.brogabe.darkzonebackpack.modules.types.BackpackModule;
 import com.brogabe.darkzonebackpack.modules.types.SellModule;
-import com.brogabe.darkzonebackpack.utils.ColorUtil;
 import de.tr7zw.nbtapi.NBTItem;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -32,7 +30,6 @@ public class PlayerListener implements Listener {
         if(!event.getPlayer().getWorld().getName().equalsIgnoreCase(configManager.getDarkzoneWorld())) return;
 
         BackpackModule module = plugin.getModuleManager().getBackpackModule();
-
         module.itemPickup(event.getPlayer(), event);
     }
 
@@ -52,7 +49,6 @@ public class PlayerListener implements Listener {
         if(nbtItem.getCompound("DarkzoneBackpack") == null) return;
 
         SellModule module = plugin.getModuleManager().getSellModule();
-
         module.onSell(player, itemStack);
     }
 }
