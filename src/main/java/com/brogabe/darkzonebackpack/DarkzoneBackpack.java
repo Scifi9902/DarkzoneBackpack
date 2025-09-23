@@ -7,6 +7,8 @@ import com.brogabe.darkzonebackpack.listeners.PlayerListener;
 import com.brogabe.darkzonebackpack.listeners.UpgradeListener;
 import com.brogabe.darkzonebackpack.menus.UpgradeMenu;
 import com.brogabe.darkzonebackpack.modules.ModuleManager;
+import com.brogabe.darkzonebackpack.utils.BackpackUtils;
+import com.brogabe.darkzonebackpack.utils.TierInfo;
 import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -25,6 +27,12 @@ public final class DarkzoneBackpack extends JavaPlugin {
     private Economy economy;
 
     @Getter
+    private TierInfo tierInfo;
+
+    @Getter
+    private BackpackUtils backpackUtils;
+
+    @Getter
     private UpgradeMenu upgradeMenu;
 
     @Override
@@ -40,8 +48,11 @@ public final class DarkzoneBackpack extends JavaPlugin {
         }
 
         // Registering Managers
+        tierInfo = new TierInfo(this);
         configManager = new ConfigManager(this);
+        backpackUtils = new BackpackUtils(this);
         moduleManager = new ModuleManager(this);
+
 
         // Register the Menus
         upgradeMenu = new UpgradeMenu(this);

@@ -4,9 +4,7 @@ import com.brogabe.darkzonebackpack.DarkzoneBackpack;
 import com.brogabe.darkzonebackpack.configuration.ConfigManager;
 import com.brogabe.darkzonebackpack.modules.types.SellModule;
 import com.brogabe.darkzonebackpack.modules.types.UpgradeModule;
-import com.brogabe.darkzonebackpack.utils.ColorUtil;
-import com.brogabe.darkzonebackpack.utils.ItemCreator;
-import com.brogabe.darkzonebackpack.utils.MoneyUtil;
+import com.brogabe.darkzonebackpack.utils.*;
 import de.tr7zw.nbtapi.NBTCompound;
 import de.tr7zw.nbtapi.NBTItem;
 import dev.triumphteam.gui.guis.Gui;
@@ -26,10 +24,16 @@ public class UpgradeMenu {
 
     private final ConfigManager configManager;
 
+    private final BackpackUtils backpackUtils;
+
+    private final TierInfo tierInfo;
+
     public UpgradeMenu(DarkzoneBackpack plugin) {
         this.plugin = plugin;
 
+        backpackUtils = plugin.getBackpackUtils();
         configManager = plugin.getConfigManager();
+        tierInfo = plugin.getTierInfo();
     }
 
     public void openMenu(Player player) {
@@ -44,7 +48,7 @@ public class UpgradeMenu {
 
         SellModule sellModule = plugin.getModuleManager().getSellModule();
 
-        if(!module.isValidBackpack(player.getItemInHand())) return;
+        if(!backpackUtils.isValidBackpack(player.getItemInHand())) return;
 
         NBTItem nbtItem = new NBTItem(player.getItemInHand());
 
@@ -52,9 +56,9 @@ public class UpgradeMenu {
 
         int tier = compound.getInteger("tier");
 
-        String currentTier = (module.nextTierExists(tier) ? String.valueOf(tier) : "MAXED");
-        String nextTier = (module.nextTierExists(tier) ? String.valueOf(tier + 1) : "MAXED");
-        String nextPrice = (module.nextTierExists(tier) ? MoneyUtil.intToDollars(module.nextTierPrice(tier)) : "MAXED");
+        String currentTier = (tierInfo.nextTierExists(tier) ? String.valueOf(tier) : "MAXED");
+        String nextTier = (tierInfo.nextTierExists(tier) ? String.valueOf(tier + 1) : "MAXED");
+        String nextPrice = (tierInfo.nextTierExists(tier) ? MoneyUtil.intToDollars(tierInfo.nextTierPrice(tier)) : "MAXED");
 
         List<String> upgradeLore = new ArrayList<>(configManager.getUpgradeLore());
         upgradeLore.replaceAll(s -> s.replace("%current%", currentTier));
