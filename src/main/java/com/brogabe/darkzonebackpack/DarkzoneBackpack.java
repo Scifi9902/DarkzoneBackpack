@@ -3,6 +3,7 @@ package com.brogabe.darkzonebackpack;
 import co.aikar.commands.PaperCommandManager;
 import com.brogabe.darkzonebackpack.commands.BackpackCommand;
 import com.brogabe.darkzonebackpack.configuration.ConfigManager;
+import com.brogabe.darkzonebackpack.listeners.KoreListeners;
 import com.brogabe.darkzonebackpack.listeners.PlayerListener;
 import com.brogabe.darkzonebackpack.listeners.UpgradeListener;
 import com.brogabe.darkzonebackpack.menus.UpgradeMenu;
@@ -58,6 +59,7 @@ public final class DarkzoneBackpack extends JavaPlugin {
 
         // Registering the listeners
         Bukkit.getPluginManager().registerEvents(new PlayerListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new KoreListeners(this), this);
         Bukkit.getPluginManager().registerEvents(new UpgradeListener(this), this);
 
         // Registering the commands

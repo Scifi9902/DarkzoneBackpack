@@ -58,6 +58,12 @@ public class ConfigManager {
     @Getter
     private List<String> upgradeLore;
 
+    @Getter
+    private boolean autoPickup;
+
+    @Getter
+    private boolean koreSupport;
+
     public ConfigManager(DarkzoneBackpack plugin) {
         this.plugin = plugin;
 
@@ -83,9 +89,12 @@ public class ConfigManager {
         darkzoneWorld = config.getString("settings.darkzone-world");
         defaultCapacity = config.getInt("settings.starting-capacity");
         sellPrice = config.getInt("settings.sell-price");
+        autoPickup = config.getBoolean("settings.auto-pickup");
+        koreSupport = config.getBoolean("settings.kore-support");
     }
 
     public void reload() {
+        plugin.reloadConfig();
         cacheValues();
     }
 }

@@ -19,6 +19,18 @@ public class BackpackCommand extends BaseCommand {
     }
 
     @Default
+    @Subcommand("help")
+    @CommandPermission("backpacks.help")
+    public void onHelp(CommandSender sender) {
+        sender.sendMessage(" ");
+        sender.sendMessage(ColorUtil.color("&4&lBackpack &c&lCommands &f-"));
+        sender.sendMessage(" ");
+        sender.sendMessage(ColorUtil.color("&e- &c/backpacks give &4<player> <tier>"));
+        sender.sendMessage(ColorUtil.color("&e- &c/backpacks reload"));
+        sender.sendMessage(" ");
+        sender.sendMessage(ColorUtil.color("&7&oPlugin coded by BroGabe"));
+    }
+
     @Subcommand("give")
     @Syntax("<player> <tier>")
     @CommandCompletion("@players")
@@ -37,5 +49,6 @@ public class BackpackCommand extends BaseCommand {
     @CommandPermission("backpacks.reload")
     public void onReload(CommandSender sender) {
         plugin.getConfigManager().reload();
+        sender.sendMessage(ColorUtil.color("&4&lBACKPACKS &fThe plugin has been reloaded."));
     }
 }

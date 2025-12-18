@@ -71,7 +71,10 @@ public class UpgradeMenu {
         sellGuiItem.setAction(action -> sellModule.onSell(player, player.getItemInHand()));
 
         GuiItem upgradeGuiItem = new GuiItem(upgradeItem);
-        upgradeGuiItem.setAction(action -> module.upgradeItem(player));
+        upgradeGuiItem.setAction(action -> {
+            sellModule.onSell(player, player.getItemInHand());
+            module.upgradeItem(player);
+        });
 
         GuiItem guideGuiItem = new GuiItem(guideItem);
 

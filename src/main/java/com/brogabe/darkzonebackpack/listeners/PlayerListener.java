@@ -5,10 +5,13 @@ import com.brogabe.darkzonebackpack.configuration.ConfigManager;
 import com.brogabe.darkzonebackpack.modules.types.BackpackModule;
 import com.brogabe.darkzonebackpack.modules.types.SellModule;
 import de.tr7zw.nbtapi.NBTItem;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
@@ -50,5 +53,19 @@ public class PlayerListener implements Listener {
 
         SellModule module = plugin.getModuleManager().getSellModule();
         module.onSell(player, itemStack);
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onPlayerKillMob(EntityDeathEvent event) {
+        if(event.getEntity() instanceof HumanEntity) return;
+        if(event.getEntity().getKiller() == null) return;
+        if(!configManager.isAutoPickup()) return;
+        if(configManager.isKoreSupport()) return;
+
+        Player player = event.getEntity().getKiller();
+
+        BackpackModule module = plugin.getModuleManager().getBackpackModule();
+
+        module.onMobDeath(player, event);
     }
 }

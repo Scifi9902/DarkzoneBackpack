@@ -11,6 +11,8 @@ messages:
 settings:
   darkzone-world: 'darkzone' # The name of the darkzone world.
   darkzone-item: 'NETHER_STAR' # The item that backpacks store.
+  kore-support: false # Whether to support FactionsKore stacked mobs
+  auto-pickup: true # Whether to auto-add mob drops to backpack.
   starting-capacity: 300
   sell-price: 30 # The sell price of the darkzone item.
 

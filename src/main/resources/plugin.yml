@@ -1,3 +1,5 @@
 name: DarkzoneBackpack
 version: '${version}'
+depend:
+  - FactionsKore
 main: com.brogabe.darkzonebackpack.DarkzoneBackpack

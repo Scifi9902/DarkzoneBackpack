@@ -2,6 +2,7 @@ package com.brogabe.darkzonebackpack.modules.types;
 
 import com.brogabe.darkzonebackpack.DarkzoneBackpack;
 import com.brogabe.darkzonebackpack.configuration.ConfigManager;
+import com.brogabe.darkzonebackpack.events.BackpackSellEvent;
 import com.brogabe.darkzonebackpack.utils.BackpackUtils;
 import com.brogabe.darkzonebackpack.utils.ColorUtil;
 import de.tr7zw.nbtapi.NBTCompound;
@@ -48,11 +49,17 @@ public class SellModule {
         int sellPrice = configManager.getSellPrice();
         int earnedMoney = Math.max(0, amount * sellPrice);
 
+        BackpackSellEvent event = new BackpackSellEvent(player, earnedMoney);
+
+        Bukkit.getPluginManager().callEvent(event);
+
+        if(event.isCancelled()) return;
+
         compound.setInteger("capacity", 0);
 
         backpackUtils.updateBackpackSlot(player, slot, nbtItem);
 
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "eco give " + player.getName() + " " + earnedMoney);
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "eco give " + player.getName() + " " + event.getAmount());
 
         player.sendMessage(ColorUtil.color("&4&lDARKZONE &fYou have sold your backpack"));
         player.playSound(player.getLocation(), Sound.LEVEL_UP, 7, 7);
