@@ -1,63 +1,71 @@
 package com.brogabe.darkzonebackpack.modules.types;
 
 import com.brogabe.darkzonebackpack.DarkzoneBackpack;
-import com.brogabe.darkzonebackpack.utils.BackpackUtils;
+import com.brogabe.darkzonebackpack.constant.DarkzoneBackpackConstant;
+import com.brogabe.darkzonebackpack.utils.BackpackHelper;
 import com.brogabe.darkzonebackpack.utils.ColorUtil;
 import com.brogabe.darkzonebackpack.utils.TierInfo;
-import de.tr7zw.nbtapi.NBTCompound;
-import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.NBT;
+import de.tr7zw.nbtapi.iface.ReadWriteNBT;
+import lombok.RequiredArgsConstructor;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+@RequiredArgsConstructor
 public class UpgradeModule {
 
     private final DarkzoneBackpack plugin;
 
     private final TierInfo tierInfo;
 
-    private final BackpackUtils backpackUtils;
+    private final BackpackHelper backpackHelper;
 
-    public UpgradeModule(DarkzoneBackpack plugin) {
-        this.plugin = plugin;
-
-        backpackUtils = plugin.getBackpackUtils();
-        tierInfo = plugin.getTierInfo();
-    }
 
     public void upgradeItem(Player player) {
         ItemStack itemInHand = player.getItemInHand();
 
-        if(!backpackUtils.isValidBackpack(itemInHand)) return;
-
-        NBTItem nbtItem = new NBTItem(itemInHand);
-        NBTCompound compound = nbtItem.getCompound("DarkzoneBackpack");
-
-        int tier = compound.getInteger("tier");
-        int price = tierInfo.nextTierPrice(tier);
-
-        if(price == -1) {
-            player.sendMessage(ColorUtil.color("&4&lBACKPACKS &fYou already have a maxed backpack!"));
-            player.playSound(player.getLocation(), Sound.VILLAGER_NO, 6, 6);
+        if (!backpackHelper.isValidBackpack(itemInHand)) {
             return;
         }
 
-        Economy economy = plugin.getEconomy();
+        this.processItemModification(player, itemInHand);
+    }
 
-        int updatedPrice = Math.max(0, price);
+    private void processItemModification(Player player, ItemStack item) {
+        NBT.modify(item, nbt -> {
+            ReadWriteNBT compound = nbt.getCompound(DarkzoneBackpackConstant.BACKPACK_COMPOUND_KEY);
 
-        if(!economy.has(player, updatedPrice)) {
-            player.sendMessage(ColorUtil.color("&4&lBACKPACKS &fYou cannot afford this!"));
-            player.playSound(player.getLocation(), Sound.VILLAGER_NO, 6, 6);
-            return;
-        }
+            if (compound == null) {
+                plugin.getLogger().warning("Could not find backpack compound key! " + DarkzoneBackpackConstant.BACKPACK_COMPOUND_KEY);
+                return;
+            }
+            int tier = compound.getInteger("tier");
+            int price = tierInfo.nextTierPrice(tier);
 
-        economy.withdrawPlayer(player, updatedPrice);
+            if (price == -1) {
+                player.sendMessage(ColorUtil.color("&4&lBACKPACKS &fYou already have a maxed backpack!"));
+                player.playSound(player.getLocation(), Sound.VILLAGER_NO, 6, 6);
+                return;
+            }
 
-        BackpackModule backpackModule = plugin.getModuleManager().getBackpackModule();
+            Economy economy = plugin.getEconomy();
 
-        player.setItemInHand(backpackModule.getBackpackItem(tier + 1));
-        player.closeInventory();
+            int updatedPrice = Math.max(0, price);
+
+            if (!economy.has(player, updatedPrice)) {
+                player.sendMessage(ColorUtil.color("&4&lBACKPACKS &fYou cannot afford this!"));
+                player.playSound(player.getLocation(), Sound.VILLAGER_NO, 6, 6);
+                return;
+            }
+
+            economy.withdrawPlayer(player, updatedPrice);
+
+            BackpackModule backpackModule = plugin.getModuleManager().getBackpackModule();
+
+            player.setItemInHand(backpackModule.getBackpackItem(tier + 1));
+            player.closeInventory();
+        });
     }
 }

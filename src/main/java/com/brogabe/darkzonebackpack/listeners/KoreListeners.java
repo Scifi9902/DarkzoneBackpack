@@ -4,32 +4,42 @@ import com.brogabe.darkzonebackpack.DarkzoneBackpack;
 import com.brogabe.darkzonebackpack.configuration.ConfigManager;
 import com.brogabe.darkzonebackpack.modules.types.BackpackModule;
 import com.golfing8.kore.event.StackedEntityDeathEvent;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+@RequiredArgsConstructor
 public class KoreListeners implements Listener {
 
     private final DarkzoneBackpack plugin;
 
     private final ConfigManager configManager;
 
-    public KoreListeners(DarkzoneBackpack plugin) {
-        this.plugin = plugin;
-
-        configManager = plugin.getConfigManager();
-    }
 
     @EventHandler
     public void onPlayerKillKoreMob(StackedEntityDeathEvent event) {
-        if(event.getStackedEntity().getBaseEntity() instanceof HumanEntity) return;
-        if(event.getKiller() == null) return;
-        if(!configManager.isAutoPickup()) return;
+        LivingEntity livingEntity = event.getStackedEntity().getBaseEntity();
+
+        if (livingEntity instanceof HumanEntity) {
+            return;
+        }
+
+        Player killer = event.getKiller();
+
+        if (killer == null) {
+            return;
+        }
+
+        if (!this.configManager.isAutoPickup()) {
+            return;
+        }
 
         Player player = event.getKiller();
 
-        BackpackModule module = plugin.getModuleManager().getBackpackModule();
+        BackpackModule module = this.plugin.getModuleManager().getBackpackModule();
 
         module.onKoreMobDeath(player, event);
     }

@@ -24,14 +24,14 @@ public class UpgradeMenu {
 
     private final ConfigManager configManager;
 
-    private final BackpackUtils backpackUtils;
+    private final BackpackHelper backpackHelper;
 
     private final TierInfo tierInfo;
 
     public UpgradeMenu(DarkzoneBackpack plugin) {
         this.plugin = plugin;
 
-        backpackUtils = plugin.getBackpackUtils();
+        backpackHelper = plugin.getBackpackHelper();
         configManager = plugin.getConfigManager();
         tierInfo = plugin.getTierInfo();
     }
@@ -48,7 +48,7 @@ public class UpgradeMenu {
 
         SellModule sellModule = plugin.getModuleManager().getSellModule();
 
-        if(!backpackUtils.isValidBackpack(player.getItemInHand())) return;
+        if(!backpackHelper.isValidBackpack(player.getItemInHand())) return;
 
         NBTItem nbtItem = new NBTItem(player.getItemInHand());
 

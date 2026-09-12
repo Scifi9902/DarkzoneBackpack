@@ -1,14 +1,13 @@
 package com.brogabe.darkzonebackpack.modules.types;
 
-import com.brogabe.darkzonebackpack.DarkzoneBackpack;
 import com.brogabe.darkzonebackpack.configuration.ConfigManager;
-import com.brogabe.darkzonebackpack.utils.BackpackUtils;
+import com.brogabe.darkzonebackpack.utils.BackpackHelper;
 import com.brogabe.darkzonebackpack.utils.ItemCreator;
 import com.brogabe.darkzonebackpack.utils.TierInfo;
 import com.golfing8.kore.event.StackedEntityDeathEvent;
 import de.tr7zw.nbtapi.NBTCompound;
 import de.tr7zw.nbtapi.NBTItem;
-import org.bukkit.Bukkit;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -19,19 +18,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 public class BackpackModule {
 
     private final ConfigManager configManager;
 
     private final TierInfo tierInfo;
 
-    private final BackpackUtils backpackUtils;
-
-    public BackpackModule(DarkzoneBackpack plugin) {
-        backpackUtils = plugin.getBackpackUtils();
-        configManager = plugin.getConfigManager();
-        tierInfo = plugin.getTierInfo();
-    }
+    private final BackpackHelper backpackHelper;
 
     public void onKoreMobDeath(Player player, StackedEntityDeathEvent event) {
         handleMobDeath(player, event.getStackedDrops().getDrops());
@@ -50,7 +44,7 @@ public class BackpackModule {
 
         if (mobDrops.isEmpty()) return;
 
-        int backpackSlot = backpackUtils.getBackpackSlot(player);
+        int backpackSlot = backpackHelper.getBackpackSlot(player);
         if (backpackSlot == -1) return;
 
         ItemStack backpack = player.getInventory().getItem(backpackSlot);
@@ -79,7 +73,7 @@ public class BackpackModule {
         }
 
         compound.setInteger("capacity", newCapacity);
-        backpackUtils.updateBackpackSlot(player, backpackSlot, nbtItem);
+        backpackHelper.updateBackpackSlot(player, backpackSlot, nbtItem);
 
         drops.removeAll(mobDrops);
     }
@@ -91,7 +85,7 @@ public class BackpackModule {
 
         if(pickedItem.hasItemMeta()) return;
 
-        int backpackSlot = backpackUtils.getBackpackSlot(player);
+        int backpackSlot = backpackHelper.getBackpackSlot(player);
 
         if(backpackSlot == -1) return;
 
@@ -110,7 +104,7 @@ public class BackpackModule {
         int overflow = (maxCapacity == -1) ? 0 : (capacity + pickupAmount) - maxCapacity;
 
         compound.setInteger("capacity", newCapacity);
-        backpackUtils.updateBackpackSlot(player, backpackSlot, nbtItem);
+        backpackHelper.updateBackpackSlot(player, backpackSlot, nbtItem);
 
         if(overflow > 0) {
             ItemStack leftover = new ItemStack((pickedItem));

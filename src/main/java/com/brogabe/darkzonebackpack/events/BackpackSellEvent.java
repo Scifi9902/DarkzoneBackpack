@@ -7,35 +7,23 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+@Getter @Setter
 public class BackpackSellEvent extends Event implements Cancellable {
 
     @Getter
     private static final HandlerList handlerList = new HandlerList();
 
-    @Getter
     private final Player player;
 
-    @Setter
-    @Getter
     private int amount;
 
-    private boolean isCancelled = false;
+    private boolean cancelled;
 
     public BackpackSellEvent(Player player, int amount) {
         this.player = player;
         this.amount = amount;
     }
 
-
-    @Override
-    public boolean isCancelled() {
-        return isCancelled;
-    }
-
-    @Override
-    public void setCancelled(boolean cancel) {
-        isCancelled = cancel;
-    }
 
     @Override
     public HandlerList getHandlers() {

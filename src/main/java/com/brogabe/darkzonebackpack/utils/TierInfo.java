@@ -1,15 +1,13 @@
 package com.brogabe.darkzonebackpack.utils;
 
 import com.brogabe.darkzonebackpack.DarkzoneBackpack;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.configuration.file.FileConfiguration;
 
+@RequiredArgsConstructor
 public class TierInfo {
 
     private final DarkzoneBackpack plugin;
-
-    public TierInfo(DarkzoneBackpack plugin) {
-        this.plugin = plugin;
-    }
 
     public boolean nextTierExists(int currentTier) {
         FileConfiguration config = plugin.getConfig();

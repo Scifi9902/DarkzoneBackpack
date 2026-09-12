@@ -8,61 +8,66 @@ import com.brogabe.darkzonebackpack.listeners.PlayerListener;
 import com.brogabe.darkzonebackpack.listeners.UpgradeListener;
 import com.brogabe.darkzonebackpack.menus.UpgradeMenu;
 import com.brogabe.darkzonebackpack.modules.ModuleManager;
-import com.brogabe.darkzonebackpack.utils.BackpackUtils;
+import com.brogabe.darkzonebackpack.utils.BackpackHelper;
 import com.brogabe.darkzonebackpack.utils.TierInfo;
 import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
-import org.bukkit.Bukkit;
+import org.bukkit.Server;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.logging.Logger;
+
+@Getter
 public final class DarkzoneBackpack extends JavaPlugin {
 
-    @Getter
     private ConfigManager configManager;
-
-    @Getter
     private ModuleManager moduleManager;
-
-    @Getter
     private Economy economy;
-
-    @Getter
     private TierInfo tierInfo;
-
-    @Getter
-    private BackpackUtils backpackUtils;
-
-    @Getter
+    private BackpackHelper backpackHelper;
     private UpgradeMenu upgradeMenu;
 
     @Override
     public void onEnable() {
         // Plugin startup logic
         saveDefaultConfig();
+        Logger logger = this.getLogger();
+        Server server = this.getServer();
+        PluginManager pluginManager =  server.getPluginManager();
 
         // Registering Dependencies
-        if (!setupEconomy() ) {
-            getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
-            getServer().getPluginManager().disablePlugin(this);
+        if (!setupEconomy(server, pluginManager)) {
+            String logMessage = String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName());
+            logger.severe(logMessage);
+            pluginManager.disablePlugin(this);
             return;
         }
 
         // Registering Managers
-        tierInfo = new TierInfo(this);
-        configManager = new ConfigManager(this);
-        backpackUtils = new BackpackUtils(this);
-        moduleManager = new ModuleManager(this);
+        this.tierInfo = new TierInfo(this);
+        this.configManager = new ConfigManager(this);
+        this.backpackHelper = new BackpackHelper(this.configManager, this.tierInfo, logger);
+        this.moduleManager = new ModuleManager(this);
 
         // Register the Menus
-        upgradeMenu = new UpgradeMenu(this);
+        this.upgradeMenu = new UpgradeMenu(this);
 
         // Registering the listeners
-        Bukkit.getPluginManager().registerEvents(new PlayerListener(this), this);
-        Bukkit.getPluginManager().registerEvents(new KoreListeners(this), this);
-        Bukkit.getPluginManager().registerEvents(new UpgradeListener(this), this);
+        this.registerListeners(pluginManager);
 
         // Registering the commands
+        this.registerCommands();
+    }
+
+    private void registerListeners(PluginManager pluginManager) {
+        pluginManager.registerEvents(new PlayerListener(this, this.configManager), this);
+        pluginManager.registerEvents(new KoreListeners(this, this.configManager), this);
+        pluginManager.registerEvents(new UpgradeListener(this), this);
+    }
+
+    private void registerCommands() {
         PaperCommandManager manager = new PaperCommandManager(this);
 
         manager.registerCommand(new BackpackCommand(this));
@@ -73,15 +78,15 @@ public final class DarkzoneBackpack extends JavaPlugin {
         // Plugin shutdown logic
     }
 
-    private boolean setupEconomy() {
-        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+    private boolean setupEconomy(Server server, PluginManager pluginManager) {
+        if (pluginManager.getPlugin("Vault") == null) {
             return false;
         }
-        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-        if (rsp == null) {
+        RegisteredServiceProvider<Economy> economyProvider = server.getServicesManager().getRegistration(Economy.class);
+        if (economyProvider == null) {
             return false;
         }
-        economy = rsp.getProvider();
-        return economy != null;
+
+        return (economy = economyProvider.getProvider()) != null;
     }
 }

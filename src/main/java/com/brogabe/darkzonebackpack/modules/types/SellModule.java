@@ -1,27 +1,23 @@
 package com.brogabe.darkzonebackpack.modules.types;
 
-import com.brogabe.darkzonebackpack.DarkzoneBackpack;
 import com.brogabe.darkzonebackpack.configuration.ConfigManager;
 import com.brogabe.darkzonebackpack.events.BackpackSellEvent;
-import com.brogabe.darkzonebackpack.utils.BackpackUtils;
+import com.brogabe.darkzonebackpack.utils.BackpackHelper;
 import com.brogabe.darkzonebackpack.utils.ColorUtil;
 import de.tr7zw.nbtapi.NBTCompound;
 import de.tr7zw.nbtapi.NBTItem;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+@RequiredArgsConstructor
 public class SellModule {
 
     private final ConfigManager configManager;
 
-    private final BackpackUtils backpackUtils;
-
-    public SellModule(DarkzoneBackpack plugin) {
-        backpackUtils = plugin.getBackpackUtils();
-        configManager = plugin.getConfigManager();
-    }
+    private final BackpackHelper backpackHelper;
 
     public void onSell(Player player, ItemStack itemInHand) {
         if(player.getLocation().getWorld().getName().equalsIgnoreCase(configManager.getDarkzoneWorld())) {
@@ -29,7 +25,7 @@ public class SellModule {
             return;
         }
 
-        if(!backpackUtils.isValidBackpack(itemInHand)) return;
+        if(!backpackHelper.isValidBackpack(itemInHand)) return;
 
         int slot = player.getInventory().first(itemInHand);
 
@@ -57,7 +53,7 @@ public class SellModule {
 
         compound.setInteger("capacity", 0);
 
-        backpackUtils.updateBackpackSlot(player, slot, nbtItem);
+        backpackHelper.updateBackpackSlot(player, slot, nbtItem);
 
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "eco give " + player.getName() + " " + event.getAmount());
 

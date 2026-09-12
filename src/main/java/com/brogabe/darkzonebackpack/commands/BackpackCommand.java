@@ -6,43 +6,48 @@ import co.aikar.commands.bukkit.contexts.OnlinePlayer;
 import com.brogabe.darkzonebackpack.DarkzoneBackpack;
 import com.brogabe.darkzonebackpack.modules.types.BackpackModule;
 import com.brogabe.darkzonebackpack.utils.ColorUtil;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Arrays;
+import java.util.stream.Stream;
+
 @CommandAlias("backpack|backpacks")
+@RequiredArgsConstructor
 public class BackpackCommand extends BaseCommand {
 
     private final DarkzoneBackpack plugin;
-
-    public BackpackCommand(DarkzoneBackpack plugin) {
-        this.plugin = plugin;
-    }
 
     @Default
     @Subcommand("help")
     @CommandPermission("backpacks.help")
     public void onHelp(CommandSender sender) {
-        sender.sendMessage(" ");
-        sender.sendMessage(ColorUtil.color("&4&lBackpack &c&lCommands &f-"));
-        sender.sendMessage(" ");
-        sender.sendMessage(ColorUtil.color("&e- &c/backpacks give &4<player> <tier>"));
-        sender.sendMessage(ColorUtil.color("&e- &c/backpacks reload"));
-        sender.sendMessage(" ");
-        sender.sendMessage(ColorUtil.color("&7&oPlugin coded by BroGabe"));
+        Stream.of(" ",
+                "&4&lBackpack &c&lCommands &f-",
+                " ",
+                "&e- &c/backpacks give &4<player> <tier>",
+                "&e- &c/backpacks reload",
+                " ",
+                "&7&oPlugin coded by BroGabe")
+                .map(ColorUtil::color)
+                .forEach(message -> sender.sendMessage(ColorUtil.color(message)));
     }
 
     @Subcommand("give")
     @Syntax("<player> <tier>")
     @CommandCompletion("@players")
     @CommandPermission("backpacks.give")
-    public void onGive(CommandSender sender, OnlinePlayer player, int tier) {
+    public void onGive(CommandSender sender, OnlinePlayer onlinePlayer, int tier) {
         BackpackModule module = plugin.getModuleManager().getBackpackModule();
 
         ItemStack backpack = module.getBackpackItem(tier);
 
-        player.getPlayer().getInventory().addItem(backpack);
+        Player player = onlinePlayer.getPlayer();
+        player.getInventory().addItem(backpack);
 
-        sender.sendMessage(ColorUtil.color("&4&lBACKPACKS &fYou have given &e" + player.getPlayer().getName() + "&f a backpack."));
+        sender.sendMessage(ColorUtil.color("&4&lBACKPACKS &fYou have given &e" + player.getName() + "&f a backpack."));
     }
 
     @Subcommand("reload")
